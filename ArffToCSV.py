@@ -21,6 +21,6 @@ def arff_to_csv(arff_file_path, csv_file_path):
     print(f"ARFF file {arff_file_path} has been successfully converted to CSV at {csv_file_path}")
 
 # Example usage
-arff_file_path = 'Training Dataset.arff'
-csv_file_path = 't_data.csv'
+arff_file_path = 'ML-Phishing-Link-Detector/PhiUSIIL_Phishing_URL_Dataset.arff'
+csv_file_path = 'ML-Phishing-Link-Detector/PhiUSIIL_Phishing_URL_Dataset.csv'
 arff_to_csv(arff_file_path, csv_file_path)
