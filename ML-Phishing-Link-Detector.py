@@ -281,7 +281,7 @@ def main():
             p = float(p)
         eval = input("Would you like to evaluate this model's performance on the dev or test set? (dev/test): ").strip().lower()
         
-        print("Training Model...\n")
+        print("Loading Training Data...\n")
         if eval == "test":
             model = KNNClassifier(train, test, k=k, p=p)
         else:
@@ -290,8 +290,8 @@ def main():
         model.evaluate()
 
     elif model_num == 4:
-        strat = input("What would you like to set the strategy to for the Dummy Classifier? (most_frequent/stratified/uniform/prior/constant): ")
-        if strat not in ['stratified', 'uniform', 'prior', 'constant']:
+        strat = input("What would you like to set the strategy to for the Dummy Classifier? (most_frequent/stratified/uniform/prior): ")
+        if strat not in ['stratified', 'uniform', 'prior']:
             strat = "most_frequent"
         eval = input("Would you like to evaluate this model's performance on the dev or test set? (dev/test): ").strip().lower()
         print("Training Model...\n")
