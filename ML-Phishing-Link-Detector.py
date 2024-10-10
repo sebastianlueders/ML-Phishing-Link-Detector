@@ -213,8 +213,8 @@ def main():
             epochs = 100
         else:
             epochs = int(epochs)
-        regularization = input("What type of regularization would you like to use? (l2/l1/elasticnet/none): ").strip().lower()
-        if regularization not in ['l1', 'elasticnet', 'none']:
+        regularization = input("What type of regularization would you like to use? (l2/none): ").strip().lower()
+        if regularization != "none":
             regularization = "l2"
         rand_seed = input("Enter a random seed value for splitting the datasets (Leave blank for default of 42): ")
         if rand_seed == "":
