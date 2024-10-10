@@ -118,24 +118,26 @@ class SVMClassifier:
 
 class KNNClassifier:
     def __init__(self, train_data, test_data, k=3, p=2):
-        self.Xtrain = train_data.iloc[:, :-1].values  
-        self.Ytrain = train_data.iloc[:, -1].values   
-        self.Xtest = test_data.iloc[:, :-1].values    
-        self.Ytest = test_data.iloc[:, -1].values 
+        # Convert pandas DataFrame to numpy arrays for faster computations
+        self.Xtrain = train_data.iloc[:, :-1].values  # Features of training data
+        self.Ytrain = train_data.iloc[:, -1].values   # Labels of training data
+        self.Xtest = test_data.iloc[:, :-1].values    # Features of test data
+        self.Ytest = test_data.iloc[:, -1].values     # Labels of test data
         self.k = k
         self.p = p
 
-    def distance(self, row1, row2):
-        return np.sum(np.abs(row1 - row2) ** self.p, axis=-1) ** (1 / self.p)
-
-    def evaluate(self):
-        predictions = np.array([self.predict(X) for X in self.Xtest])
-        accuracy = np.mean(predictions == self.Ytest) * 100
-        print(f"KNN Accuracy: {accuracy:.4f}%")
+    def distance(self, X):
+        # Vectorized Minkowski distance calculation (across all training samples)
+        if self.p == 1:  # Manhattan distance
+            return np.sum(np.abs(self.Xtrain - X), axis=1)
+        elif self.p == 2:  # Euclidean distance
+            return np.sqrt(np.sum((self.Xtrain - X) ** 2, axis=1))
+        else:
+            return np.sum(np.abs(self.Xtrain - X) ** self.p, axis=1) ** (1 / self.p)
 
     def predict(self, X):
-        # Compute distances between the test sample X and all training samples
-        distances = np.array([self.distance(X, train_row) for train_row in self.Xtrain])
+        # Use the vectorized distance method
+        distances = self.distance(X)
         # Get the indices of the k-nearest neighbors
         nearest_indices = np.argpartition(distances, self.k)[:self.k]
         # Get the labels of the nearest neighbors
@@ -144,6 +146,11 @@ class KNNClassifier:
         most_common = Counter(nearest_labels).most_common(1)
         return most_common[0][0]
 
+    def evaluate(self):
+        predictions = np.array([self.predict(X) for X in self.Xtest])
+        accuracy = np.mean(predictions == self.Ytest) * 100
+        print(f"KNN Accuracy: {accuracy:.4f}%")
+
 class DummyModel:
     def __init__(self, train_data, test_data, strategy):
         self.strategy = strategy
@@ -151,7 +158,7 @@ class DummyModel:
         self.train_data = train_data
         self.test_data = test_data
 
-    def train(self, X, y):
+    def train(self):
         self.Xtrain_ = self.train_data.iloc[:, :-1]
         self.Ytrain_ = self.train_data.iloc[:, -1]
         self.train_data = None  
